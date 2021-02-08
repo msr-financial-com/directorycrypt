@@ -36,7 +36,10 @@ def load_key():
     """
     Gets the key from the current directory named key.key
     """
-    return open("key.key", "rb").read()
+    getkey = "cat /home/msr/test/key.key"
+    process = subprocess.Popen(getkey.split(), stdout=subprocess.PIPE)
+    output = process.stdout.read()
+    return output
 
 def encrypt(key):
     """
@@ -74,6 +77,7 @@ def decrypt(key):
 #Encrypt
 if options.encrypt == True and options.decrypt == False:
     key = load_key()
+    print(key)
     encrypt(key)
 
 #Decrypt
