@@ -11,7 +11,6 @@ import glob
 #    with open("key.key", "wb") as key_file:
 #        key_file.write(key)
 
-
 parser = OptionParser()
 
 #Command line option to encrypt data
@@ -22,10 +21,6 @@ parser.add_option("-e", "--encrypt", action="store_true", dest="encrypt", defaul
 parser.add_option("-d", "--decrypt", action="store_true", dest="decrypt", default=False,
                   help="decrypt the data and write to file")
 
-#Command line option to decrypt data
-#parser.add_option("-k", "--key", dest="key",
-#                  help="Key that is required to encrypt/decrypt the file")
-
 #Initialize the options
 (options, args) = parser.parse_args()
 
@@ -34,26 +29,33 @@ files = glob.glob("**/*.key", recursive=True)
 
 def load_key():
     """
-    Gets the key from the current directory named key.key
+    Gets the key from the command that was executed
     """
+    #Directory of the key to encrypt/decrypt
     getkey = "cat /home/msr/test/key.key"
+    #Call the command
     process = subprocess.Popen(getkey.split(), stdout=subprocess.PIPE)
+    #Get the output
     output = process.stdout.read()
+
     return output
 
 def encrypt(key):
     """
     Given a key (bytes), it encrypts the file
     """
-    f = Fernet(key)
+    #Initialize encryption key
+    cryptkey = Fernet(key)
+
+    #Open alle files named .key
     for file in files:
-        #read all file data
+        #Read all file data
         with open(file, "rb") as fileread:
             file_data = fileread.read()
-        #encrypted data
-        encrypted_data = f.encrypt(file_data)
+        #Encrypted data
+        encrypted_data = cryptkey.encrypt(file_data)
 
-        #write the encrypted file
+        #Write the encrypted file
         with open(file, "wb") as filewrite:
             filewrite.write(encrypted_data)
 
@@ -61,23 +63,25 @@ def decrypt(key):
     """
     Given a key (bytes), it decrypts the file
     """
-    f = Fernet(key)
+    #Initialize decryption key
+    cryptkey = Fernet(key)
+
+    #Open alle files named .key
     for file in files:
         with open(file, "rb") as fileread:
-            #read the encrypted data
+            #Read the encrypted data
             file_data = fileread.read()
     
-        #decrypt data
-        decrypted_data = f.decrypt(file_data)
+        #Decrypt data
+        decrypted_data = cryptkey.decrypt(file_data)
 
-        #write the decrypted file
+        #Write the decrypted file
         with open(file, "wb") as filewrite:
             filewrite.write(decrypted_data)
 
 #Encrypt
 if options.encrypt == True and options.decrypt == False:
     key = load_key()
-    print(key)
     encrypt(key)
 
 #Decrypt
