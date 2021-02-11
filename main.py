@@ -32,7 +32,7 @@ def load_key():
     Gets the key from the command that was executed
     """
     #Directory of the key to encrypt/decrypt
-    getkey = "cat /home/msr/test/key.key2"
+    getkey = "cat key.key2"
     #Call the command
     process = subprocess.Popen(getkey.split(), stdout=subprocess.PIPE)
     #Get the output
