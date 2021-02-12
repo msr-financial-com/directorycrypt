@@ -6,11 +6,14 @@ Executing the main file, will encrypt or decrypt all files with the name ".key".
 ### Help
   ```
 $ python3 main.py -h
-Usage: main.py [options]
+usage: main.py [-h] [-d] [-e] filename [filename ...]
 
-Options:
+positional arguments:
+  filename       This will will be encrypted/decrypted
+
+optional arguments:
   -h, --help     show this help message and exit
-  -e, --encrypt  encrypt the data and write to file
-  -d, --decrypt  decrypt the data and write to file
+  -d, --decrypt  Decrypt file and write to it
+  -e, --encrypt  Encrypt file and write to it
 
 ```

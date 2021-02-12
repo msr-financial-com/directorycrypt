@@ -1,5 +1,5 @@
 from cryptography.fernet import Fernet
-from optparse import OptionParser
+import argparse
 import subprocess
 import glob
 
@@ -11,21 +11,27 @@ import glob
 #    with open("key.key", "wb") as key_file:
 #        key_file.write(key)
 
-parser = OptionParser()
+parser = argparse.ArgumentParser()
 
-#Command line option to encrypt data
-parser.add_option("-e", "--encrypt", action="store_true", dest="encrypt", default=False,
-                  help="encrypt the data and write to file", metavar="ENCRYPT")
+#Command line option to declare which file
+parser.add_argument('filename', nargs='+',
+                    help='This will will be encrypted/decrypted')
 
-#Command line option to decrypt data
-parser.add_option("-d", "--decrypt", action="store_true", dest="decrypt", default=False,
-                  help="decrypt the data and write to file")
+#Command line option to declare which file
+parser.add_argument('-d', '--decrypt', default=False, action='store_true',
+                    help='Decrypt file and write to it')
+
+#Command line option to declare which file
+parser.add_argument('-e', '--encrypt', default=False, action='store_true',
+                    help='Encrypt file and write to it')
 
 #Initialize the options
-(options, args) = parser.parse_args()
+args = parser.parse_args()
 
 #Find alle key files
-files = glob.glob("**/*.key", recursive=True)
+files=[]
+for file in args.filename:
+    files.extend(glob.glob("**/" + file, recursive=True))
 
 def load_key():
     """
@@ -51,7 +57,9 @@ def encrypt(key):
     for file in files:
         #Read all file data
         with open(file, "rb") as fileread:
+            #Read the decrypted data
             file_data = fileread.read()
+
         #Encrypted data
         encrypted_data = cryptkey.encrypt(file_data)
 
@@ -68,6 +76,7 @@ def decrypt(key):
 
     #Open alle files named .key
     for file in files:
+        #Read all file data
         with open(file, "rb") as fileread:
             #Read the encrypted data
             file_data = fileread.read()
@@ -80,11 +89,11 @@ def decrypt(key):
             filewrite.write(decrypted_data)
 
 #Encrypt
-if options.encrypt == True and options.decrypt == False:
+if args.encrypt == True and args.decrypt == False:
     key = load_key()
     encrypt(key)
 
 #Decrypt
-if options.decrypt == True and options.encrypt == False:
+if args.decrypt == True and args.encrypt == False:
     key = load_key()
     decrypt(key)
