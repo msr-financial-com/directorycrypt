@@ -2,6 +2,7 @@ from cryptography.fernet import Fernet
 import argparse
 import subprocess
 import glob
+import os
 
 #def create_key():
 #    """
@@ -14,24 +15,29 @@ import glob
 parser = argparse.ArgumentParser()
 
 #Command line option to declare which file
-parser.add_argument('filename', nargs='+',
+parser.add_argument('-f', '--filename', nargs='+',
                     help='This will will be encrypted/decrypted')
 
-#Command line option to declare which file
+#Command line option to decrypt
 parser.add_argument('-d', '--decrypt', default=False, action='store_true',
                     help='Decrypt file and write to it')
 
-#Command line option to declare which file
+#Command line option to encrypt
 parser.add_argument('-e', '--encrypt', default=False, action='store_true',
                     help='Encrypt file and write to it')
+
+#Command line option to create a new conf and directory for new given host
+parser.add_argument('-c', '--create',
+                    help='With given option create directory and config for the host, needs a string')
 
 #Initialize the options
 args = parser.parse_args()
 
 #Find alle key files
-files=[]
-for file in args.filename:
-    files.extend(glob.glob("**/" + file, recursive=True))
+if args.filename:
+    files=[]
+    for file in args.filename:
+        files.extend(glob.glob("**/" + file, recursive=True))
 
 def load_key():
     """
@@ -97,3 +103,12 @@ if args.encrypt == True and args.decrypt == False:
 if args.decrypt == True and args.encrypt == False:
     key = load_key()
     decrypt(key)
+
+#If create and hostname is there do this
+if args.create:
+    if os.path.exists(args.create) == False:
+        #If directory does not exists create it
+        os.mkdir(args.create)
+    #Create config file for the new Host
+    conf = open(args.create + "/" + args.create + ".conf", "w")
+    subprocess.call(["sed", "-e", f's/@HOSTNAME@/{args.create}/g', "template.conf"], stdout=conf)
