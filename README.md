@@ -14,6 +14,11 @@ Decrypt a file named test.key:
 
 `$ python3 main.py -d -f test.key`
 
+Encrypt all files named .key recursiv
+
+
+`$ python3 main.py -e -f *.key`
+
 Create a new config for new server named test:
 
 
