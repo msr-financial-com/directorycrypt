@@ -4,13 +4,19 @@
 Executing the main file, will encrypt or decrypt all files with the name ".key".
 
 ### Usage
-Encrypt a file named test.key
+Encrypt a file named test.key:
+
+
 `$ python3 main.py -e -f test.key`
 
-Decrypt a file named test.key
+Decrypt a file named test.key:
+
+
 `$ python3 main.py -d -f test.key`
 
-Create a new config for new server named test
+Create a new config for new server named test:
+
+
 `$ python3 main.py -c test`
 
 ### Help
