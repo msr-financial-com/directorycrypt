@@ -1,7 +1,7 @@
 # Dirctorcrypt
 
 ### Summary
-Executing the main file, will encrypt or decrypt all files with the name ".key".
+The purpose of this repo is to decrypt or encrypt given files or create a new config for a new server
 
 ### Usage
 Encrypt a file named test.key:
@@ -14,7 +14,7 @@ Decrypt a file named test.key:
 
 `$ python3 main.py -d -f test.key`
 
-Encrypt all files named .key recursiv
+Encrypt all files named .key (This will search recursiv through all directorys under the current directory)
 
 
 `$ python3 main.py -e -f *.key`
