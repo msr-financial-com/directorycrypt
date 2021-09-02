@@ -41,20 +41,6 @@ if args.filename:
         files.append(path.resolve())
 
 
-def load_key():
-    """
-    Gets the key from the command that was executed
-    """
-    # Directory of the key to encrypt/decrypt
-    getkey = "cat key.key2"
-    # Call the command
-    process = subprocess.Popen(getkey.split(), stdout=subprocess.PIPE)
-    # Get the output
-    output = process.stdout.read()
-
-    return output
-
-
 def encrypt(key):
     """
     Given a key (bytes), it encrypts the file
@@ -108,15 +94,13 @@ def decrypt(key):
 
 # Encrypt
 if args.encrypt == True and args.decrypt == False:
-    key = load_key()
-    encrypt(key)
+    encrypt(args.key)
 
 
 # Decrypt
 if args.decrypt == True and args.encrypt == False:
-    key = load_key()
     try:
-        decrypt(key)
+        decrypt(args.key)
     except (cryptography.fernet.InvalidToken, TypeError):
         print("Already decrypted or invalid Token")
 
