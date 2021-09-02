@@ -17,7 +17,10 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 
 # Command line option to declare which file
-parser.add_argument("-f", "--filename", help="This will will be encrypted/decrypted")
+parser.add_argument("-f", "--filename", help="This will will be encrypted/decrypted / USE DOUBLEQUOTE WHEN USING REGEX")
+
+# Command line option to declare key
+parser.add_argument("-k", "--key", help="The key to encrypt/decrypt the files")
 
 # Command line option to decrypt
 parser.add_argument("-d", "--decrypt", default=False, action="store_true", help="Decrypt file and write to it")
@@ -36,7 +39,6 @@ if args.filename:
     files = []
     for path in Path(".").rglob(args.filename):
         files.append(path.resolve())
-        print(files)
 
 
 def load_key():
@@ -59,22 +61,23 @@ def encrypt(key):
     """
     # Initialize encryption key
     cryptkey = Fernet(key)
-
     # Open all found files
     for file in files:
         # Read all file data
-        with open(file, "rb") as fileread:
-            # Read the decrypted data
-            file_data = fileread.read()
+        isDirectory = os.path.isdir(file)
+        if isDirectory == False:
+            with open(file, "rb") as fileread:
+                # Read the decrypted data
+                file_data = fileread.read()
 
-        # Encrypted data
-        encrypted_data = cryptkey.encrypt(file_data)
+            # Encrypted data
+            encrypted_data = cryptkey.encrypt(file_data)
 
-        # Write the encrypted file
-        with open(file, "wb") as filewrite:
-            filewrite.write(encrypted_data)
+            # Write the encrypted file
+            with open(file, "wb") as filewrite:
+                filewrite.write(encrypted_data)
 
-        print("Successfully encrypted " + str(file))
+            print("Successfully encrypted " + str(file))
 
 
 def decrypt(key):
@@ -86,19 +89,21 @@ def decrypt(key):
 
     # Open all found files
     for file in files:
-        # Read all file data
-        with open(file, "rb") as fileread:
-            # Read the encrypted data
-            file_data = fileread.read()
+        isDirectory = os.path.isdir(file)
+        if isDirectory == False:
+            # Read all file data
+            with open(file, "rb") as fileread:
+                # Read the encrypted data
+                file_data = fileread.read()
 
-        # Decrypt data
-        decrypted_data = cryptkey.decrypt(file_data)
+            # Decrypt data
+            decrypted_data = cryptkey.decrypt(file_data)
 
-        # Write the decrypted file
-        with open(file, "wb") as filewrite:
-            filewrite.write(decrypted_data)
+            # Write the decrypted file
+            with open(file, "wb") as filewrite:
+                filewrite.write(decrypted_data)
 
-        print("Successfully decrypted" + str(file))
+            print("Successfully decrypted " + str(file))
 
 
 # Encrypt
