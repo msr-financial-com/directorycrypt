@@ -37,7 +37,7 @@ args = parser.parse_args()
 # Find all files with given filename argument
 if args.filename:
     files = []
-    for path in Path(".").rglob(args.filename):
+    for path in Path("./CERTS/").rglob(args.filename):
         files.append(path.resolve())
 
 
@@ -51,7 +51,7 @@ def encrypt(key):
     for file in files:
         # Read all file data
         isDirectory = os.path.isdir(file)
-        if isDirectory == False:
+        if not isDirectory:
             with open(file, "rb") as fileread:
                 # Read the decrypted data
                 file_data = fileread.read()
@@ -76,7 +76,7 @@ def decrypt(key):
     # Open all found files
     for file in files:
         isDirectory = os.path.isdir(file)
-        if isDirectory == False:
+        if not isDirectory:
             # Read all file data
             with open(file, "rb") as fileread:
                 # Read the encrypted data
@@ -93,12 +93,12 @@ def decrypt(key):
 
 
 # Encrypt
-if args.encrypt == True and args.decrypt == False:
+if args.encrypt and not args.decrypt:
     encrypt(args.key)
 
 
 # Decrypt
-if args.decrypt == True and args.encrypt == False:
+if args.decrypt and not args.encrypt:
     try:
         decrypt(args.key)
     except (cryptography.fernet.InvalidToken, TypeError):
@@ -106,7 +106,7 @@ if args.decrypt == True and args.encrypt == False:
 
 # If create and hostname is there do this
 if args.create:
-    if os.path.exists(args.create) == False:
+    if not os.path.exists(args.create):
         # If directory does not exists create it
         os.mkdir(args.create)
     # Create config file for the new Host
