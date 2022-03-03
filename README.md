@@ -3,7 +3,18 @@
 ### Summary
 The purpose of this repo is to decrypt or encrypt given files or create a new config for a new server
 
-### Usage
+### Usage of the repo itself
+
+#### Execute the `setup.sh` script first
+
+Now everything should be decrypted.
+
+Everything will be encrytped after the commit and added to the commit
+
+Changes can now be pushed
+
+### Usage of main.py
+
 Encrypt a file named test.key:
 
 
